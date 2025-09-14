@@ -11,3 +11,17 @@ api_example
 ├──requirements.txt
 └──.gitignore
 ```
+
+### To run the test:
+
+#### Install the requirements:
+
+```
+pip3 install -r requirements.txt
+```
+
+#### Run the locust file:
+
+```
+locust
+```
