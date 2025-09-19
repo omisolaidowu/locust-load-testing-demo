@@ -53,10 +53,13 @@ locust -f locust_with_selenium.py
 
 ### 1. Locust UI
 
-![Sample Locust Stats UI](screenshots/sample_stats_area.png)
-![Sample Locust Charts](screenshots/sample_chart_section.png)
-![Sample Locust Logs Section](screenshots/sample_log_section.png)
-![Sample Load Distribution Ratio](screenshots/locust_sample_load_distribution_ratio.png)
+## ![Sample Locust Stats UI](screenshots/sample_stats_area.png)
+
+## ![Sample Locust Charts](screenshots/sample_chart_section.png)
+
+## ![Sample Locust Logs Section](screenshots/sample_log_section.png)
+
+## ![Sample Load Distribution Ratio](screenshots/locust_sample_load_distribution_ratio.png)
 
 ### 2. Cloud Grid Execution
 
