@@ -6,7 +6,12 @@ Locust is an open-source Python tool for load-testing applications at scale. Thi
 
 ```
 api_example
+├──screenshots
+├──selenium_setup
+   └──setup.py
+├──local_locustfile.py
 ├──locustfile.py
+├──locust_with_selenium.py
 ├──main.py
 ├──requirements.txt
 └──.gitignore
