@@ -15,6 +15,7 @@ class SeleniumUser(User):
     def on_start(self):
         setting.setUp()
         self.driver = setting.driver
+        self.failed = False
 
     @task
     def load_homepage(self):
@@ -27,6 +28,7 @@ class SeleniumUser(User):
             size_bytes = len(html.encode("utf-8"))
         except Exception as e:
             exception = e
+            self.failed = True
         total_time = int((time.time() - start_time) * 1000)
         events.request.fire(
             request_type="SELENIUM",
@@ -54,6 +56,7 @@ class SeleniumUser(User):
             size_bytes = len(html.encode("utf-8"))
         except Exception as e:
             exception = e
+            self.failed = True
         total_time = int((time.time() - start_time) * 1000)
         events.request.fire(
             request_type="SELENIUM",
@@ -64,4 +67,10 @@ class SeleniumUser(User):
         )
 
     def on_stop(self):
-        setting.tearDown()
+        status = "failed" if self.failed else "passed"
+        try:
+            self.driver.execute_script(f"lambda-status={status}")
+        except Exception as e:
+            print(f"Could not set lambda-status: {e}")
+        finally:
+            setting.tearDown()
