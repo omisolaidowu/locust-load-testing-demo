@@ -17,33 +17,39 @@ class SeleniumUser(User):
         self.driver = setting.driver
         self.failed = False
 
-    @task
-    def load_homepage(self):
+    def record_event(self, name, action):
         start_time = time.time()
         exception = None
         size_bytes = 0
+
         try:
-            self.driver.get(self.host)
-            html = self.driver.page_source
+            html = action() or ""
             size_bytes = len(html.encode("utf-8"))
         except Exception as e:
             exception = e
             self.failed = True
+
         total_time = int((time.time() - start_time) * 1000)
+
         events.request.fire(
             request_type="SELENIUM",
-            name="load_homepage",
+            name=name,
             response_time=total_time,
             response_length=size_bytes,
             exception=exception,
         )
 
     @task
+    def load_homepage(self):
+        def action():
+            self.driver.get(self.host)
+            return self.driver.page_source
+
+        self.record_event("load_homepage", action)
+
+    @task
     def goto_product(self):
-        start_time = time.time()
-        exception = None
-        size_bytes = 0
-        try:
+        def action():
             self.driver.get(self.host)  # Ensure on homepage
             wait = WebDriverWait(self.driver, 10)
             product = wait.until(
@@ -52,19 +58,9 @@ class SeleniumUser(User):
                 )
             )
             product.click()
-            html = self.driver.page_source
-            size_bytes = len(html.encode("utf-8"))
-        except Exception as e:
-            exception = e
-            self.failed = True
-        total_time = int((time.time() - start_time) * 1000)
-        events.request.fire(
-            request_type="SELENIUM",
-            name="goto_product",
-            response_time=total_time,
-            response_length=size_bytes,
-            exception=exception,
-        )
+            return self.driver.page_source
+
+        self.record_event("goto_product", action)
 
     def on_stop(self):
         status = "failed" if self.failed else "passed"
